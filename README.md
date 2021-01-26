@@ -83,49 +83,7 @@ export default {
 
 集成方式如下（ps：可直接拷贝以下代码到一个html文件中试一下）：
 
-```html
-<!DOCTYPE html>
-<html lang="en">
-  <body>
-    <iframe
-      src="https://goldsubmarine.github.io/workflow-bpmn-modeler/cdn/0.2.7/"
-      id="myFrame"
-      frameborder="0"
-      width="100%"
-      height="800px">
-    </iframe>
-
-    <script>
-      let myFrame = document.getElementById("myFrame");
-      // 获取到流程详情
-      window.addEventListener("message", (event) => {
-        console.log(event.data); // { xml: 'xxx', img: 'xxx', process: {} }
-      });
-      myFrame.onload = () => {
-        let postMsg = {
-          xml: "", // 后端查询到的xml，新建则为空串
-          users: [
-            { name: "张三1", id: "zhangsan" },
-            { name: "李四1", id: "lisi" },
-            { name: "王五1", id: "wangwu" },
-          ],
-          groups: [
-            { name: "web组1", id: "web" },
-            { name: "java组1", id: "java" },
-            { name: "python组1", id: "python" },
-          ],
-          categorys: [
-            { name: "OA1", id: "oa" },
-            { name: "财务1", id: "finance" },
-          ],
-          isView: false
-        }
-        // 设置初始化值
-        myFrame.contentWindow.postMessage(postMsg, "*")
-      }
-    </script>
-  </body>
-</html>
+```
 ```
 
 ## 关于定制
