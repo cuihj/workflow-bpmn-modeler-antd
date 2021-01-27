@@ -1,50 +1,54 @@
 <template>
-  <div v-loading="isView" class="flow-containers" :class="{ 'view-mode': isView }">
-    <el-container style="height: 100%">
-      <el-header style="border-bottom: 1px solid rgb(218 218 218);height: auto;">
+  <div  class="flow-containers" :class="{ 'view-mode': isView }">
+    <a-layout >
+      <a-layout-header theme="light">
         <div style="display: flex; padding: 10px 0px; justify-content: space-between;">
-          <div>
-            <el-upload action="" :before-upload="openBpmn" style="margin-right: 10px; display:inline-block;">
-              <el-tooltip effect="dark" content="加载xml" placement="bottom">
-                <el-button size="mini" icon="el-icon-folder-opened" />
-              </el-tooltip>
-            </el-upload>
-            <el-tooltip effect="dark" content="新建" placement="bottom">
-              <el-button size="mini" icon="el-icon-circle-plus" @click="newDiagram" />
-            </el-tooltip>
-            <el-tooltip effect="dark" content="自适应屏幕" placement="bottom">
-              <el-button size="mini" icon="el-icon-rank" @click="fitViewport" />
-            </el-tooltip>
-            <el-tooltip effect="dark" content="放大" placement="bottom">
-              <el-button size="mini" icon="el-icon-zoom-in" @click="zoomViewport(true)" />
-            </el-tooltip>
-            <el-tooltip effect="dark" content="缩小" placement="bottom">
-              <el-button size="mini" icon="el-icon-zoom-out" @click="zoomViewport(false)" />
-            </el-tooltip>
-            <el-tooltip effect="dark" content="后退" placement="bottom">
-              <el-button size="mini" icon="el-icon-back" @click="modeler.get('commandStack').undo()" />
-            </el-tooltip>
-            <el-tooltip effect="dark" content="前进" placement="bottom">
-              <el-button size="mini" icon="el-icon-right" @click="modeler.get('commandStack').redo()" />
-            </el-tooltip>
-          </div>
-          <div>
-            <el-button size="mini" icon="el-icon-download" @click="saveXML(true)">下载xml</el-button>
-            <el-button size="mini" icon="el-icon-picture" @click="saveImg('svg', true)">下载svg</el-button>
-            <el-button size="mini" type="primary" @click="save">保存模型</el-button>
-          </div>
-        </div>
-      </el-header>
-      <el-container style="align-items: stretch">
-        <el-main style="padding: 0;">
-          <div ref="canvas" class="canvas" />
-        </el-main>
-        <el-aside style="width: 400px; min-height: 650px; background-color: #f0f2f5">
-          <panel v-if="modeler" :modeler="modeler" :users="users" :groups="groups" :categorys="categorys" />
-        </el-aside>
-      </el-container>
-    </el-container>
+            <a-space>
+            <a-upload
+                    accept=".xml"
+                    name="file"
+                    action=""
+                    :showUploadList="false"
+                    :beforeUpload="openBpmn"
+            >
+              <a-button> <a-icon type="upload" /> 加载xml </a-button>
+            </a-upload>
+            <a-tooltip title="新建">
+              <a-button icon="plus" @click="newDiagram"/>
+            </a-tooltip>
+            <a-tooltip title="自适应屏幕">
+              <a-button icon="shrink" @click="fitViewport"/>
+            </a-tooltip>
+            <a-tooltip title="放大">
+              <a-button icon="zoom-in" @click="zoomViewport(true)"/>
+            </a-tooltip>
+            <a-tooltip title="缩小">
+              <a-button icon="zoom-out" @click="zoomViewport(false)"/>
+            </a-tooltip>
+            <a-tooltip title="后退">
+              <a-button icon="arrow-left" @click="modeler.get('commandStack').undo()"/>
+            </a-tooltip>
+            <a-tooltip title="前进">
+              <a-button icon="arrow-right" @click="modeler.get('commandStack').redo()"/>
+            </a-tooltip>
 
+            </a-space>
+            <a-space>
+            <a-button size="small" icon="download" @click="saveXML(true)">下载xml</a-button>
+            <a-button size="small" icon="picture" @click="saveImg('svg', true)">下载svg</a-button>
+            <a-button size="small" type="primary" @click="save">保存模型</a-button>
+            </a-space>
+        </div>
+      </a-layout-header>
+      <a-layout>
+          <a-layout-content>
+              <div ref="canvas" class="canvas" />
+          </a-layout-content>
+        <a-layout-sider width="300px" theme="light">
+          <panel v-if="modeler" :modeler="modeler" :users="users" :groups="groups" :categorys="categorys" />
+        </a-layout-sider>
+      </a-layout>
+    </a-layout>
   </div>
 </template>
 
@@ -332,17 +336,7 @@ export default {
 @import "~bpmn-js/dist/assets/bpmn-font/css/bpmn.css";
 @import "~bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css";
 @import "~bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
-.view-mode {
-  .el-header, .el-aside, .djs-palette, .bjs-powered-by {
-    display: none;
-  }
-  .el-loading-mask {
-    background-color: initial;
-  }
-  .el-loading-spinner {
-    display: none;
-  }
-}
+
 .flow-containers {
   // background-color: #ffffff;
   width: 100%;

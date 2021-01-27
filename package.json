@@ -22,7 +22,6 @@
   },
   "keywords": [
     "vue",
-    "element-ui",
     "flowable",
     "模型设计器"
   ],
@@ -36,7 +35,8 @@
   },
   "dependencies": {
     "bpmn-js": "^7.2.1",
-    "element-ui": "^2.12.0",
+    "core-js": "^3.8.3",
+    "ant-design-vue": "1.7.2",
     "vue": "^2.6.10",
     "xcrud": "0.4.1"
   },

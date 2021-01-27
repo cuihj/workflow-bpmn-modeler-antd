@@ -1,18 +1,16 @@
 <template>
   <div>
-    <x-form ref="xForm" v-model="formData" :config="formConfig">
-      <template #executionListener>
-        <el-badge :value="executionListenerLength">
-          <el-button size="small" @click="dialogName = 'executionListenerDialog'">编辑</el-button>
-        </el-badge>
-      </template>
-    </x-form>
-    <executionListenerDialog
-      v-if="dialogName === 'executionListenerDialog'"
-      :element="element"
-      :modeler="modeler"
-      @close="finishExecutionListener"
-    />
+    <a-form :form="form" ref="xForm" :label-col="{ span: 8 }" :wrapper-col="{ span: 16}">
+      <a-form-item label="节点 id">
+        <a-input v-decorator="['id', { rules: [{ required: true, message: 'Id 不能为空' }] }]"/>
+      </a-form-item>
+      <a-form-item label="节点名称">
+        <a-input v-decorator="['name', { rules: [{ required: true, message: 'Id 不能为空' }] }]"/>
+      </a-form-item>
+      <a-form-item label="节点描述">
+        <a-input v-decorator="['documentation', { rules: [{ required: true, message: 'Id 不能为空' }] }]"/>
+      </a-form-item>
+    </a-form>
   </div>
 </template>
 
@@ -24,6 +22,7 @@ export default {
   mixins: [mixinPanel, mixinExecutionListener],
   data() {
     return {
+      form: this.$form.createForm(this, {}),
       formData: {}
     }
   },
@@ -77,6 +76,14 @@ export default {
   },
   created() {
     this.formData = commonParse(this.element)
+    console.log(this.formData)
+    this.$nextTick(() => {
+      this.form.setFieldsValue({
+        id: this.formData.id,
+        name: this.formData.name,
+        documentation: this.formData.documentation
+      })
+    })
   }
 }
 </script>

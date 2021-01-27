@@ -33,12 +33,13 @@ if (NODE_ENV === 'lib') {
 const mainFileStr = `
 import Vue from 'vue'
 import App from './${appFileName}.vue'
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
+// import ElementUI from 'element-ui'
+import Antd from 'ant-design-vue'
+import 'ant-design-vue/dist/antd.css';
 
 Vue.config.productionTip = false
 
-Vue.use(ElementUI)
+Vue.use(Antd)
 
 new Vue({
   render: h => h(App)
@@ -82,10 +83,10 @@ module.exports = {
                   priority: 10,
                   chunks: 'initial' // only package third parties that are initially dependent
                 },
-                elementUI: {
-                  name: 'chunk-elementUI', // split elementUI into a single package
+                Antd: {
+                  name: 'chunk-Antd', // split elementUI into a single package
                   priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
-                  test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
+                  test: /[\\/]node_modules[\\/]_?Antd(.*)/ // in order to adapt to cnpm
                 },
                 vue: {
                   name: 'chunk-vue', // split elementUI into a single package
