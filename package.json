@@ -1,17 +1,15 @@
 {
   "name": "workflow-bpmn-modeler-antd",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "基于 `vue` 和 `bpmn.io@7.0` ，实现 flowable 的 modeler 模型设计器",
   "main": "dist/workflow-bpmn-modeler-antd.umd.min.js",
   "scripts": {
     "dev": "vue-cli-service serve --open",
-    "demo": "cross-env NODE_ENV=demo vue-cli-service build",
     "lib": "cross-env NODE_ENV=lib vue-cli-service build",
-    "cdn": "cross-env NODE_ENV=cdn vue-cli-service build",
     "lint": "vue-cli-service lint",
     "build": "cross-env NODE_ENV=build vue-cli-service build --target lib --inline-vue --entry package/index.js",
     "prepublish": "yarn build",
-    "postpublish": "yarn lib "
+    "postpublish": "yarn lib"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
@@ -34,8 +32,8 @@
     "url": "https://github.com/GoldSubmarine/workflow-bpmn-modeler/issues"
   },
   "dependencies": {
-    "bpmn-js": "^7.2.1",
     "ant-design-vue": "1.7.2",
+    "bpmn-js": "^7.2.1",
     "vue": "^2.6.10"
   },
   "devDependencies": {
