@@ -1,25 +1,7 @@
-import xcrud from 'xcrud'
-import golbalConfig from 'xcrud/package/common/config'
+
 import showConfig from '../flowable/showConfig'
-golbalConfig.set({
-  input: {
-    // size: 'mini'
-  },
-  select: {
-    // size: 'mini'
-  },
-  colorPicker: {
-    showAlpha: true
-  },
-  xform: {
-    form: {
-      labelWidth: 'auto'
-      // size: 'mini'
-    }
-  }
-})
 export default {
-  components: { xForm: xcrud.xForm },
+  components: {},
   props: {
     modeler: {
       type: Object,
@@ -35,29 +17,64 @@ export default {
     }
   },
   watch: {
-    'formData.id': function(val) {
-      this.updateProperties({ id: val })
-    },
-    'formData.name': function(val) {
-      this.updateProperties({ name: val })
-    },
-    'formData.color': function(val) {
-      this.setColor({ fill: val, stroke: val })
-      this.updateProperties({ color: val })
-    },
-    'formData.documentation': function(val) {
-      if (!val) {
-        this.updateProperties({ documentation: [] })
-        return
-      }
-      const documentationElement = this.modeler.get('moddle').create('bpmn:Documentation', { text: val })
-      this.updateProperties({ documentation: [documentationElement] })
-    }
+    // 'formData.documentation': {
+    //   deep: true,
+    //   immediate: true,
+    //   handler (obj,a) {     //数据改变之后执行的事情
+    //     console.log(obj)
+    //     console.log(a)
+    //     // if(obj.documentation) {
+    //     //   if (!val) {
+    //     //     this.updateProperties({ documentation: [] })
+    //     //     return
+    //     //   }
+    //     //   const documentationElement = this.modeler.get('moddle').create('bpmn:Documentation', { text: val })
+    //     //   this.updateProperties({ documentation: [documentationElement] })
+    //     // }
+    //   }
+    // }
+  // 'formData.id': function(val) {
+  //     this.updateProperties({ id: val })
+  //   },
+  //   'formData.name': function(val) {
+  //     console.log(val)
+  //     this.updateProperties({ name: val })
+  //   },
+  //   'formData.color': function(val) {
+  //     this.setColor({ fill: val, stroke: val })
+  //     this.updateProperties({ color: val })
+  //   },
+  //   'formData.documentation': function(val) {
+  //     console.log(val)
+  //     if (!val) {
+  //       this.updateProperties({ documentation: [] })
+  //       return
+  //     }
+  //     const documentationElement = this.modeler.get('moddle').create('bpmn:Documentation', { text: val })
+  //     this.updateProperties({ documentation: [documentationElement] })
+  //   }
   },
   methods: {
     updateProperties(properties) {
       const modeling = this.modeler.get('modeling')
       modeling.updateProperties(this.element, properties)
+    },
+    updateCommonProperties(values){
+      if (values.hasOwnProperty('id')) {
+        let val = values.id
+        this.updateProperties({ id: val })
+      } else if (values.hasOwnProperty('name')) {
+        let val = values.name
+        this.updateProperties({ name: val })
+      }else if (values.hasOwnProperty('documentation')) {
+        let val = values.documentation
+        if (!val) {
+          this.updateProperties({ documentation: [] })
+          return
+        }
+        const documentationElement = this.modeler.get('moddle').create('bpmn:Documentation', { text: val })
+        this.updateProperties({ documentation: [documentationElement] })
+      }
     },
     setColor(properties) {
       const modeling = this.modeler.get('modeling')

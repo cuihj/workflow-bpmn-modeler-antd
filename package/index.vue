@@ -311,6 +311,7 @@
         const xml = await this.saveXML()
         const svg = await this.saveImg()
         const result = { process, xml, svg }
+        console.log(result)
         this.$emit('save', result)
         window.parent.postMessage(result, '*')
       },

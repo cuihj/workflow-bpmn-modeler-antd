@@ -4,10 +4,10 @@
       <a-input v-decorator="['id', { rules: [{ required: true, message: 'Id 不能为空' }] }]"/>
     </a-form-item>
     <a-form-item label="节点名称">
-      <a-input v-decorator="['name', { rules: [{ required: true, message: 'Id 不能为空' }] }]"/>
+      <a-input v-decorator="['name']"/>
     </a-form-item>
     <a-form-item label="节点描述">
-      <a-input v-decorator="['documentation', { rules: [{ required: true, message: 'Id 不能为空' }] }]"/>
+      <a-input v-decorator="['documentation']"/>
     </a-form-item>
     <a-form-item label="跳转条件">
       <a-input v-decorator="['conditionExpression']"/>
@@ -91,8 +91,10 @@ export default {
   },
   methods:{
     onValuesChange: function(prop, values) {
-      console.log(values.hasOwnProperty('userType'))
-      console.log(values)
+      for (var key in values) {
+        this.formData[key] = values[key]
+      }
+      this.updateCommonProperties(values);
       if (values.hasOwnProperty('conditionExpression')) {
         let val = values.conditionExpression
         if (val) {

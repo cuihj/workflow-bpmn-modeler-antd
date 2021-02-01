@@ -5,12 +5,12 @@
                 <a-input v-decorator="['id', { rules: [{ required: true, message: 'Id 不能为空' }] }]"/>
             </a-form-item>
             <a-form-item label="节点名称">
-                <a-input v-decorator="['name', { rules: [{ required: true, message: 'Id 不能为空' }] }]"/>
+                <a-input v-decorator="['name', { rules: [{ required: true, message: '名称不能为空' }] }]"/>
             </a-form-item>
             <a-form-item label="节点描述">
-                <a-input v-decorator="['documentation', { rules: [{ required: true, message: 'Id 不能为空' }] }]"/>
+                <a-input v-decorator="['documentation']"/>
             </a-form-item>
-            <a-form-item show="!!_this.showConfig.userType" label="人员类型">
+            <a-form-item label="人员类型">
                 <a-select placeholder="人员类型"
                           v-decorator="['userType', {rules: [{required: true, message: '请选择编码分类'}]}]">
                     <a-select-option v-for="item in userTypeOption" :key="item.value">
@@ -19,7 +19,7 @@
                 </a-select>
             </a-form-item>
 
-            <a-form-item show="!!_this.showConfig.assignee && _this.formData.userType === 'assignee'"
+            <a-form-item v-show="formData.userType === 'assignee'"
                          label="指定人员">
                 <a-select placeholder="指定人员" mode="multiple"
                           v-decorator="['assignee']">
@@ -28,7 +28,7 @@
                     </a-select-option>
                 </a-select>
             </a-form-item>
-            <a-form-item show="!!_this.showConfig.candidateUsers && _this.formData.userType === 'candidateUsers'"
+            <a-form-item v-show="formData.userType === 'candidateUsers'"
                          label="候选人员">
                 <a-select placeholder="候选人员" mode="multiple"
                           v-decorator="['candidateUsers']">
@@ -38,7 +38,7 @@
                 </a-select>
             </a-form-item>
 
-            <a-form-item show="!!_this.showConfig.candidateGroups && _this.formData.userType === 'candidateGroups'"
+            <a-form-item v-show="formData.userType === 'candidateGroups'"
                          label="候选组">
                 <a-select placeholder="候选组" mode="multiple"
                           v-decorator="['candidateGroups']">
@@ -93,102 +93,117 @@
     },
     computed: {},
     watch: {
-      'formData.userType': function(val, oldVal) {
-        if (oldVal) {
-          const types = ['assignee', 'candidateUsers', 'candidateGroups']
-          types.forEach(type => {
-            delete this.element.businessObject.$attrs[`flowable:${type}`]
-            delete this.formData[type]
-          })
-        }
-      },
-      'formData.assignee': function(val) {
-        if (this.formData.userType !== 'assignee') {
-          delete this.element.businessObject.$attrs[`flowable:assignee`]
-          return
-        }
-        this.updateProperties({ 'flowable:assignee': val })
-      },
-      'formData.candidateUsers': function(val) {
-        if (this.formData.userType !== 'candidateUsers') {
-          delete this.element.businessObject.$attrs[`flowable:candidateUsers`]
-          return
-        }
-        this.updateProperties({ 'flowable:candidateUsers': val?.join(',') })
-      },
-      'formData.candidateGroups': function(val) {
-        if (this.formData.userType !== 'candidateGroups') {
-          delete this.element.businessObject.$attrs[`flowable:candidateGroups`]
-          return
-        }
-        this.updateProperties({ 'flowable:candidateGroups': val?.join(',') })
-      },
-      'formData.async': function(val) {
-        if (val === '') val = null
-        this.updateProperties({ 'flowable:async': true })
-      },
-      'formData.dueDate': function(val) {
-        if (val === '') val = null
-        this.updateProperties({ 'flowable:dueDate': val })
-      },
-      'formData.formKey': function(val) {
-        if (val === '') val = null
-        this.updateProperties({ 'flowable:formKey': val })
-      },
-      'formData.priority': function(val) {
-        if (val === '') val = null
-        this.updateProperties({ 'flowable:priority': val })
-      },
-      'formData.skipExpression': function(val) {
-        if (val === '') val = null
-        this.updateProperties({ 'flowable:skipExpression': val })
-      },
-      'formData.isForCompensation': function(val) {
-        if (val === '') val = null
-        this.updateProperties({ 'isForCompensation': val })
-      },
-      'formData.triggerable': function(val) {
-        if (val === '') val = null
-        this.updateProperties({ 'flowable:triggerable': val })
-      },
-      'formData.class': function(val) {
-        if (val === '') val = null
-        this.updateProperties({ 'flowable:class': val })
-      },
-      'formData.autoStoreVariables': function(val) {
-        if (val === '') val = null
-        this.updateProperties({ 'flowable:autoStoreVariables': val })
-      },
-      'formData.exclude': function(val) {
-        if (val === '') val = null
-        this.updateProperties({ 'flowable:exclude': val })
-      },
-      'formData.ruleVariablesInput': function(val) {
-        if (val === '') val = null
-        this.updateProperties({ 'flowable:ruleVariablesInput': val })
-      },
-      'formData.rules': function(val) {
-        if (val === '') val = null
-        this.updateProperties({ 'flowable:rules': val })
-      },
-      'formData.resultVariable': function(val) {
-        if (val === '') val = null
-        this.updateProperties({ 'flowable:resultVariable': val })
-      }
+      // 'formData.userType': function(val, oldVal) {
+      //   if (oldVal) {
+      //     const types = ['assignee', 'candidateUsers', 'candidateGroups']
+      //     types.forEach(type => {
+      //       delete this.element.businessObject.$attrs[`flowable:${type}`]
+      //       delete this.formData[type]
+      //     })
+      //   }
+      // },
+      // 'formData.assignee': function(val) {
+      //   if (this.formData.userType !== 'assignee') {
+      //     delete this.element.businessObject.$attrs[`flowable:assignee`]
+      //     return
+      //   }
+      //   this.updateProperties({ 'flowable:assignee': val })
+      // },
+      // 'formData.candidateUsers': function(val) {
+      //   if (this.formData.userType !== 'candidateUsers') {
+      //     delete this.element.businessObject.$attrs[`flowable:candidateUsers`]
+      //     return
+      //   }
+      //   this.updateProperties({ 'flowable:candidateUsers': val?.join(',') })
+      // },
+      // 'formData.candidateGroups': function(val) {
+      //   if (this.formData.userType !== 'candidateGroups') {
+      //     delete this.element.businessObject.$attrs[`flowable:candidateGroups`]
+      //     return
+      //   }
+      //   this.updateProperties({ 'flowable:candidateGroups': val?.join(',') })
+      // },
+      // 'formData.async': function(val) {
+      //   if (val === '') val = null
+      //   this.updateProperties({ 'flowable:async': true })
+      // },
+      // 'formData.dueDate': function(val) {
+      //   if (val === '') val = null
+      //   this.updateProperties({ 'flowable:dueDate': val })
+      // },
+      // 'formData.formKey': function(val) {
+      //   if (val === '') val = null
+      //   this.updateProperties({ 'flowable:formKey': val })
+      // },
+      // 'formData.priority': function(val) {
+      //   if (val === '') val = null
+      //   this.updateProperties({ 'flowable:priority': val })
+      // },
+      // 'formData.skipExpression': function(val) {
+      //   if (val === '') val = null
+      //   this.updateProperties({ 'flowable:skipExpression': val })
+      // },
+      // 'formData.isForCompensation': function(val) {
+      //   if (val === '') val = null
+      //   this.updateProperties({ 'isForCompensation': val })
+      // },
+      // 'formData.triggerable': function(val) {
+      //   if (val === '') val = null
+      //   this.updateProperties({ 'flowable:triggerable': val })
+      // },
+      // 'formData.class': function(val) {
+      //   if (val === '') val = null
+      //   this.updateProperties({ 'flowable:class': val })
+      // },
+      // 'formData.autoStoreVariables': function(val) {
+      //   if (val === '') val = null
+      //   this.updateProperties({ 'flowable:autoStoreVariables': val })
+      // },
+      // 'formData.exclude': function(val) {
+      //   if (val === '') val = null
+      //   this.updateProperties({ 'flowable:exclude': val })
+      // },
+      // 'formData.ruleVariablesInput': function(val) {
+      //   if (val === '') val = null
+      //   this.updateProperties({ 'flowable:ruleVariablesInput': val })
+      // },
+      // 'formData.rules': function(val) {
+      //   if (val === '') val = null
+      //   this.updateProperties({ 'flowable:rules': val })
+      // },
+      // 'formData.resultVariable': function(val) {
+      //   if (val === '') val = null
+      //   this.updateProperties({ 'flowable:resultVariable': val })
+      // }
     },
     created() {
       let cache = commonParse(this.element)
       cache = userTaskParse(cache)
       this.formData = cache
-      this.computedExecutionListenerLength()
-      this.computedTaskListenerLength()
-      this.computedHasMultiInstance()
+      this.$nextTick(() => {
+        this.form.setFieldsValue({
+          id: this.formData.id,
+          name: this.formData.name,
+          documentation: this.formData.documentation,
+          userType: this.formData.userType,
+          candidateUsers: this.formData.candidateUsers,
+          assignee: this.formData.assignee
+        })
+      })
+
+      // this.computedExecutionListenerLength()
+      // this.computedTaskListenerLength()
+      // this.computedHasMultiInstance()
     },
     methods: {
       onValuesChange: function(prop, values) {
-        console.log(values.hasOwnProperty('userType'))
-        console.log(values)
+        for (var key in values) {
+          this.formData[key] = values[key]
+        }
+        this.updateCommonProperties(values);
         if (values.hasOwnProperty('userType')) {
+          // let val = values.userType
+          // this.formData.userType = val
           let userType = prop.form.getFieldValue('userType')
           if (userType) {
             const types = ['assignee', 'candidateUsers', 'candidateGroups']
@@ -212,7 +227,7 @@
             return
           }
           this.updateProperties({ 'flowable:candidateUsers': val?.join(',') })
-        }else if (values.hasOwnProperty('candidateGroups')) {
+        } else if (values.hasOwnProperty('candidateGroups')) {
           let val = values.candidateGroups
           let userType = prop.form.getFieldValue('userType')
           if (userType !== 'candidateGroups') {
