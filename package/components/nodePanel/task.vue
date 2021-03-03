@@ -87,6 +87,7 @@
         dialogName: '',
         executionListenerLength: 0,
         taskListenerLength: 0,
+        init: false,
         hasMultiInstance: false,
         formData: {}
       }
@@ -177,30 +178,35 @@
       // }
     },
     created() {
-      let cache = commonParse(this.element)
-      cache = userTaskParse(cache)
-      this.formData = cache
-      this.$nextTick(() => {
+      this.init = true
+      this.$nextTick(function() {
+        let cache = commonParse(this.element)
+        cache = userTaskParse(cache)
+        this.formData = cache
         this.form.setFieldsValue({
           id: this.formData.id,
           name: this.formData.name,
           documentation: this.formData.documentation,
           userType: this.formData.userType,
           candidateUsers: this.formData.candidateUsers,
+          candidateGroups: this.formData.candidateGroups,
           assignee: this.formData.assignee
         })
+        this.init = false
       })
-
       // this.computedExecutionListenerLength()
       // this.computedTaskListenerLength()
       // this.computedHasMultiInstance()
     },
     methods: {
       onValuesChange: function(prop, values) {
+        if (this.init === true) {
+          return
+        }
         for (var key in values) {
           this.formData[key] = values[key]
         }
-        this.updateCommonProperties(values);
+        this.updateCommonProperties(values)
         if (values.hasOwnProperty('userType')) {
           // let val = values.userType
           // this.formData.userType = val
