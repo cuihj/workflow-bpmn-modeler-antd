@@ -6,6 +6,9 @@
     <a-form-item label="节点名称">
       <a-input v-decorator="['name', { rules: [{ required: true, message: '名称不能为空' }] }]"/>
     </a-form-item>
+    <a-form-item label="数据表单">
+      <a-input v-decorator="['dataForm', { rules: [{ required: true, message: '名称不能为空' }] }]"/>
+    </a-form-item>
     <a-form-item label="节点描述">
       <a-input v-decorator="['documentation']"/>
     </a-form-item>
@@ -38,21 +41,13 @@ export default {
     //   this.updateProperties({ 'flowable:processCategory': val })
     // }
   },
-  methods: {
-    onValuesChange: function(prop, values) {
-      for (var key in values) {
-        this.formData[key] = values[key]
-      }
-      this.updateCommonProperties(values);
-    }
-  },
   created() {
     this.formData = commonParse(this.element)
-    console.log(this.formData)
     this.$nextTick(() => {
       this.form.setFieldsValue({
         id: this.formData.id,
         name: this.formData.name,
+        dataForm: this.formData.dataForm,
         documentation: this.formData.documentation
       })
     })
@@ -66,6 +61,12 @@ export default {
         this.computedSignalLength()
       }
       this.dialogName = ''
+    },
+    onValuesChange: function(prop, values) {
+      for (var key in values) {
+        this.formData[key] = values[key]
+      }
+      this.updateCommonProperties(values);
     }
   }
 }

@@ -275,7 +275,9 @@
         return {
           id: element.id,
           name: element.name,
-          category: element.$attrs['flowable:processCategory']
+          documentation: element.documentation[0].text,
+          category: element.$attrs['flowable:processCategory'],
+          dataForm: element.$attrs['flowable:dataForm']
         }
       },
       getProcessElement() {
@@ -311,7 +313,6 @@
         const xml = await this.saveXML()
         const svg = await this.saveImg()
         const result = { process, xml, svg }
-        console.log(result)
         this.$emit('save', result)
         window.parent.postMessage(result, '*')
       },

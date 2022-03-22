@@ -6,6 +6,7 @@
     </startEvent>
     <sequenceFlow id="Flow_1i6ntl4" sourceRef="startNode1" targetRef="Activity_02v0kq2" />
     <userTask id="Activity_02v0kq2" name="一级审批" flowable:formKey="Approve:Level1" flowable:assignee="${approverId}">
+      <documentation>qweqweqwe</documentation>
       <incoming>Flow_1i6ntl4</incoming>
       <incoming>Flow_1n4cqa6</incoming>
       <outgoing>Flow_101x41f</outgoing>

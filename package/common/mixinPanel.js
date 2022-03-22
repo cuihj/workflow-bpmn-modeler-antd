@@ -66,6 +66,9 @@ export default {
       } else if (values.hasOwnProperty('name')) {
         let val = values.name
         this.updateProperties({ name: val })
+      }else if (values.hasOwnProperty('dataForm')) {
+        let val = values.dataForm
+        this.updateProperties({ 'flowable:dataForm': val })
       }else if (values.hasOwnProperty('documentation')) {
         let val = values.documentation
         if (!val) {

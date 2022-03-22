@@ -21,7 +21,7 @@
 
             <a-form-item v-show="formData.userType === 'assignee'"
                          label="指定人员">
-                <a-select placeholder="指定人员" mode="multiple"
+                <a-select placeholder="指定人员"
                           v-decorator="['assignee']">
                     <a-select-option v-for="item in users" :key="item.id">
                         {{ item.name }}
@@ -234,12 +234,14 @@
           }
           this.updateProperties({ 'flowable:candidateUsers': val?.join(',') })
         } else if (values.hasOwnProperty('candidateGroups')) {
+          console.log(values)
           let val = values.candidateGroups
           let userType = prop.form.getFieldValue('userType')
           if (userType !== 'candidateGroups') {
             delete this.element.businessObject.$attrs[`flowable:candidateGroups`]
             return
           }
+          console.log(val)
           this.updateProperties({ 'flowable:candidateGroups': val?.join(',') })
         }
       },
