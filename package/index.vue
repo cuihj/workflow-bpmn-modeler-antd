@@ -272,10 +272,15 @@
       // 对外 api
       getProcess() {
         const element = this.getProcessElement()
+        let desc = ''
+        if (element.documentation[0]) {
+          desc = element.documentation[0].text
+        }
+
         return {
           id: element.id,
           name: element.name,
-          documentation: element.documentation[0].text,
+          desc: desc,
           category: element.$attrs['flowable:processCategory'],
           dataForm: element.$attrs['flowable:dataForm']
         }
