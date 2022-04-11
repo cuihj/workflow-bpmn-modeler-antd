@@ -1,16 +1,20 @@
 <template>
   <a-form :form="form" ref="xForm" :label-col="{ span: 8 }" :wrapper-col="{ span: 16}">
+
     <a-form-item label="节点 id">
       <a-input v-decorator="['id', { rules: [{ required: true, message: 'Id 不能为空' }] }]"/>
     </a-form-item>
     <a-form-item label="节点名称">
       <a-input v-decorator="['name', { rules: [{ required: true, message: '名称不能为空' }] }]"/>
     </a-form-item>
+    <a-form-item label="数据库schema">
+      <a-input v-decorator="['schema', { rules: [{ required: false, message: 'schema不能为空' }] }]"/>
+    </a-form-item>
     <a-form-item label="数据表单">
-      <a-input v-decorator="['dataForm', { rules: [{ required: true, message: '名称不能为空' }] }]"/>
+      <a-input v-decorator="['dataForm', { rules: [{ required: true, message: '数据表单不能为空' }] }]"/>
     </a-form-item>
     <a-form-item label="节点描述">
-      <a-input v-decorator="['documentation']"/>
+      <a-input v-decorator="['documentation',{ rules: [{ required: true, message: '节点描述不能为空' }] }]"/>
     </a-form-item>
   </a-form>
 </template>
@@ -45,6 +49,7 @@ export default {
     this.formData = commonParse(this.element)
     this.$nextTick(() => {
       this.form.setFieldsValue({
+        schema: this.formData.schema,
         id: this.formData.id,
         name: this.formData.name,
         dataForm: this.formData.dataForm,

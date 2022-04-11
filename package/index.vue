@@ -273,7 +273,7 @@
       getProcess() {
         const element = this.getProcessElement()
         let desc = ''
-        if (element.documentation[0]) {
+        if (element.documentation && element.documentation.length>0) {
           desc = element.documentation[0].text
         }
 
@@ -282,7 +282,8 @@
           name: element.name,
           desc: desc,
           category: element.$attrs['flowable:processCategory'],
-          dataForm: element.$attrs['flowable:dataForm']
+          dataForm: element.$attrs['flowable:dataForm'],
+          schema: element.$attrs['flowable:schema']
         }
       },
       getProcessElement() {
