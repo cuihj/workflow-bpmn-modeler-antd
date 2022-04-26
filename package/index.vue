@@ -283,6 +283,7 @@
           desc: desc,
           category: element.$attrs['flowable:processCategory'],
           dataForm: element.$attrs['flowable:dataForm'],
+          apiUrl: element.$attrs['flowable:apiUrl'],
           schema: element.$attrs['flowable:schema']
         }
       },

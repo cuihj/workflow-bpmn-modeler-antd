@@ -13,6 +13,9 @@
     <a-form-item label="数据表单">
       <a-input v-decorator="['dataForm', { rules: [{ required: true, message: '数据表单不能为空' }] }]"/>
     </a-form-item>
+    <a-form-item label="接口地址">
+      <a-input v-decorator="['apiUrl', { rules: [{ required: false, message: '接口地址不能为空' }] }]"/>
+    </a-form-item>
     <a-form-item label="节点描述">
       <a-input v-decorator="['documentation',{ rules: [{ required: true, message: '节点描述不能为空' }] }]"/>
     </a-form-item>
@@ -53,6 +56,7 @@ export default {
         id: this.formData.id,
         name: this.formData.name,
         dataForm: this.formData.dataForm,
+        apiUrl: this.formData.apiUrl,
         documentation: this.formData.documentation
       })
     })
