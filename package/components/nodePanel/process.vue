@@ -1,23 +1,21 @@
 <template>
   <a-form :form="form" ref="xForm" :label-col="{ span: 8 }" :wrapper-col="{ span: 16}">
 
-    <a-form-item label="节点 id">
-      <a-input v-decorator="['id', { rules: [{ required: true, message: 'Id 不能为空' }] }]"/>
+    <a-form-item label="流程">
+      <a-select placeholder="请选择"
+                v-decorator="['id', {rules: [{required: true, message: '请选择流程'}]}]">
+        <a-select-option v-for="item in processNames" :key="item.id">
+          {{ item.name }}
+        </a-select-option>
+      </a-select>
     </a-form-item>
-    <a-form-item label="节点名称">
-      <a-input v-decorator="['name', { rules: [{ required: true, message: '名称不能为空' }] }]"/>
-    </a-form-item>
-    <a-form-item label="数据库schema">
-      <a-input v-decorator="['schema', { rules: [{ required: false, message: 'schema不能为空' }] }]"/>
-    </a-form-item>
-    <a-form-item label="数据表单">
-      <a-input v-decorator="['dataForm', { rules: [{ required: true, message: '数据表单不能为空' }] }]"/>
-    </a-form-item>
-    <a-form-item label="接口地址">
-      <a-input v-decorator="['apiUrl', { rules: [{ required: false, message: '接口地址不能为空' }] }]"/>
-    </a-form-item>
-    <a-form-item label="节点描述">
-      <a-input v-decorator="['documentation',{ rules: [{ required: true, message: '节点描述不能为空' }] }]"/>
+    <a-form-item label="模板">
+      <a-select placeholder="请选择" @change="onChange"
+                v-decorator="['templateId', {rules: [{required: true, message: '请选择流程'}]}]">
+        <a-select-option v-for="item in templateNames" :key="item.id" :template="item">
+          {{ item.name }}
+        </a-select-option>
+      </a-select>
     </a-form-item>
   </a-form>
 </template>
@@ -33,6 +31,16 @@ export default {
   },
   mixins: [mixinPanel],
   // mixins: [mixinPanel, mixinExecutionListener],
+  props: {
+    processNames: {
+      type: Array,
+      required: true
+    },
+    templateNames: {
+      type: Array,
+      required: true
+    }
+  },
   data() {
     return {
       form: this.$form.createForm(this, {onValuesChange:this.onValuesChange}),
@@ -52,12 +60,8 @@ export default {
     this.formData = commonParse(this.element)
     this.$nextTick(() => {
       this.form.setFieldsValue({
-        schema: this.formData.schema,
         id: this.formData.id,
-        name: this.formData.name,
-        dataForm: this.formData.dataForm,
-        apiUrl: this.formData.apiUrl,
-        documentation: this.formData.documentation
+        templateId: this.formData.templateId,
       })
     })
   },
@@ -70,6 +74,14 @@ export default {
         this.computedSignalLength()
       }
       this.dialogName = ''
+    },
+    onChange(val,option){
+      let template = option.data.attrs.template || {}
+      let text = template.text || ''
+      let {id} = this.form.getFieldsValue(['id']);
+      text = text.replace('id="{processId}"', ' id="' + id + '" ')
+      text = text.replace('flowable:templateId="{templateId}"', 'flowable:templateId="'+val+'"')
+      this.$emit('templateChange',text)
     },
     onValuesChange: function(prop, values) {
       for (var key in values) {

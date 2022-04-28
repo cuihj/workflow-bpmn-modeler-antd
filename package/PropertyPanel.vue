@@ -8,7 +8,10 @@
       :modeler="modeler"
       :users="users"
       :groups="groups"
+      :processNames="processNames"
+      :templateNames="templateNames"
       :categorys="categorys"
+      @templateChange="onTemplateChange"
     />
   </div>
 </template>
@@ -36,6 +39,14 @@ export default {
     categorys: {
       type: Array,
       required: true
+    },
+    processNames: {
+      type: Array,
+      default: () => []
+    },
+    templateNames: {
+      type: Array,
+      default: () => []
     },
     modeler: {
       type: Object,
@@ -108,6 +119,9 @@ export default {
     this.handleModeler()
   },
   methods: {
+    onTemplateChange(text){
+      this.$emit("templateChange",text)
+    },
     handleModeler() {
       this.modeler.on('root.added', e => {
         if (e.element.type === 'bpmn:Process') {
@@ -119,7 +133,6 @@ export default {
       })
       this.modeler.on('element.click', e => {
         const { element } = e
-        console.log(element)
         if (element.type === 'bpmn:Process') {
           this.element = element
         }

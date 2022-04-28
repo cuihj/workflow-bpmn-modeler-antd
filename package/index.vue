@@ -15,7 +15,7 @@
                             加载xml
                         </a-button>
                     </a-upload>
-                    <a-tooltip title="新建">
+                    <a-tooltip title="新建" :hidden="true">
                         <a-button icon="plus" @click="newDiagram"/>
                     </a-tooltip>
                     <a-tooltip title="自适应屏幕">
@@ -49,7 +49,12 @@
                 <div ref="canvas" class="canvas"/>
             </a-layout-content>
             <a-layout-sider width="300px" theme="light">
-                <panel v-if="modeler" :modeler="modeler" :users="users" :groups="groups" :categorys="categorys"/>
+                <panel v-if="modeler" :modeler="modeler"
+                       :users="users" :groups="groups"
+                       :template-names="templateNames"
+                       :process-names="processNames"
+                       @templateChange="onTemplateChange"
+                       :categorys="categorys"/>
             </a-layout-sider>
         </a-layout>
     </div>
@@ -84,6 +89,14 @@
         default: () => []
       },
       categorys: {
+        type: Array,
+        default: () => []
+      },
+      processNames: {
+        type: Array,
+        default: () => []
+      },
+      templateNames: {
         type: Array,
         default: () => []
       },
@@ -129,6 +142,10 @@
     methods: {
       newDiagram() {
         this.createNewDiagram(getInitStr())
+      },
+      onTemplateChange(text){
+        this.createNewDiagram(text)
+        console.log(text)
       },
       // 让图能自适应屏幕
       fitViewport() {
@@ -272,19 +289,10 @@
       // 对外 api
       getProcess() {
         const element = this.getProcessElement()
-        let desc = ''
-        if (element.documentation && element.documentation.length>0) {
-          desc = element.documentation[0].text
-        }
-
         return {
           id: element.id,
           name: element.name,
-          desc: desc,
-          category: element.$attrs['flowable:processCategory'],
-          dataForm: element.$attrs['flowable:dataForm'],
-          apiUrl: element.$attrs['flowable:apiUrl'],
-          schema: element.$attrs['flowable:schema']
+          templateId: element.$attrs['flowable:templateId'],
         }
       },
       getProcessElement() {

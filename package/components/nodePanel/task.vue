@@ -234,14 +234,12 @@
           }
           this.updateProperties({ 'flowable:candidateUsers': val?.join(',') })
         } else if (values.hasOwnProperty('candidateGroups')) {
-          console.log(values)
           let val = values.candidateGroups
           let userType = prop.form.getFieldValue('userType')
           if (userType !== 'candidateGroups') {
             delete this.element.businessObject.$attrs[`flowable:candidateGroups`]
             return
           }
-          console.log(val)
           this.updateProperties({ 'flowable:candidateGroups': val?.join(',') })
         }
       },

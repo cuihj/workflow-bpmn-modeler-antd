@@ -63,26 +63,9 @@ export default {
       if (values.hasOwnProperty('id')) {
         let val = values.id
         this.updateProperties({ id: val })
-      } else if (values.hasOwnProperty('name')) {
-        let val = values.name
-        this.updateProperties({ name: val })
-      }else if (values.hasOwnProperty('dataForm')) {
-        let val = values.dataForm
-        this.updateProperties({ 'flowable:dataForm': val })
-      }else if (values.hasOwnProperty('apiUrl')) {
-        let val = values.apiUrl
-        this.updateProperties({ 'flowable:apiUrl': val })
-      }else if (values.hasOwnProperty('schema')) {
-        let val = values.schema
-        this.updateProperties({ 'flowable:schema': val })
-      }else if (values.hasOwnProperty('documentation')) {
-        let val = values.documentation
-        if (!val) {
-          this.updateProperties({ documentation: [] })
-          return
-        }
-        const documentationElement = this.modeler.get('moddle').create('bpmn:Documentation', { text: val })
-        this.updateProperties({ documentation: [documentationElement] })
+      }else if (values.hasOwnProperty('templateId')) {
+        let val = values.templateId
+        this.updateProperties({ 'flowable:templateId': val })
       }
     },
     setColor(properties) {
