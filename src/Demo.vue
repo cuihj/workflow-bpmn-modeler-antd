@@ -5,8 +5,6 @@
       :xml="xml"
       :users="users"
       :groups="groups"
-      :categorys="categorys"
-      :process-names="processNames"
       :template-names="templateNames"
       :is-view="false"
       @save="saveModeler"
@@ -37,8 +35,6 @@ export default {
         { name: 'OA', id: 'oa' },
         { name: '财务', id: 'finance' }
       ],
-      processNames:[ { name: '订单1', id: 'qq' },
-        { name: '订单2', id: 'finance' }],
       templateNames:[ { name: '模板1', id: 't1',text:'' },
         { name: '模板2', id: 't2',text:'' }],
     }

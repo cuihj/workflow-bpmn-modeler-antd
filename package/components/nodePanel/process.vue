@@ -2,12 +2,7 @@
   <a-form :form="form" ref="xForm" :label-col="{ span: 8 }" :wrapper-col="{ span: 16}">
 
     <a-form-item label="流程">
-      <a-select placeholder="请选择"
-                v-decorator="['id', {rules: [{required: true, message: '请选择流程'}]}]">
-        <a-select-option v-for="item in processNames" :key="item.id">
-          {{ item.name }}
-        </a-select-option>
-      </a-select>
+      <a-input v-decorator="['id']" :disabled="true"/>
     </a-form-item>
     <a-form-item label="模板">
       <a-select placeholder="请选择" @change="onChange"
@@ -34,7 +29,7 @@ export default {
   props: {
     processNames: {
       type: Array,
-      required: true
+      required: false
     },
     templateNames: {
       type: Array,
@@ -61,7 +56,7 @@ export default {
     this.$nextTick(() => {
       this.form.setFieldsValue({
         id: this.formData.id,
-        templateId: this.formData.templateId,
+        // templateId: this.formData.templateId,
       })
     })
   },
@@ -80,7 +75,7 @@ export default {
       let text = template.text || ''
       let {id} = this.form.getFieldsValue(['id']);
       text = text.replace('id="{processId}"', ' id="' + id + '" ')
-      text = text.replace('flowable:templateId="{templateId}"', 'flowable:templateId="'+val+'"')
+      // text = text.replace('flowable:templateId="{templateId}"', 'flowable:templateId="'+val+'"')
       this.$emit('templateChange',text)
     },
     onValuesChange: function(prop, values) {
