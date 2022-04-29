@@ -6,7 +6,7 @@
     </a-form-item>
     <a-form-item label="模板">
       <a-select placeholder="请选择" @change="onChange"
-                v-decorator="['templateId', {rules: [{required: true, message: '请选择流程'}]}]">
+                v-decorator="['templateId', {rules: [{required: false, message: '请选择流程'}]}]">
         <a-select-option v-for="item in templateNames" :key="item.id" :template="item">
           {{ item.name }}
         </a-select-option>
@@ -56,7 +56,7 @@ export default {
     this.$nextTick(() => {
       this.form.setFieldsValue({
         id: this.formData.id,
-        // templateId: this.formData.templateId,
+        templateId: this.formData.templateId,
       })
     })
   },
@@ -75,8 +75,9 @@ export default {
       let text = template.text || ''
       let {id} = this.form.getFieldsValue(['id']);
       text = text.replace('id="{processId}"', ' id="' + id + '" ')
-      // text = text.replace('flowable:templateId="{templateId}"', 'flowable:templateId="'+val+'"')
+      text = text.replace('flowable:templateId="{templateId}"', 'flowable:templateId="'+val+'"')
       this.$emit('templateChange',text)
+      // this.form.setFieldsValue({templateId:val})
     },
     onValuesChange: function(prop, values) {
       for (var key in values) {
