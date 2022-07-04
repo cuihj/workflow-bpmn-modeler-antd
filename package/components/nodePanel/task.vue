@@ -207,7 +207,10 @@
           this.formData[key] = values[key]
         }
         this.updateCommonProperties(values)
-        if (values.hasOwnProperty('userType')) {
+         if (values.hasOwnProperty('name')) {
+          let val = values.name
+          this.updateProperties({ 'name': val })
+        } else if (values.hasOwnProperty('userType')) {
           // let val = values.userType
           // this.formData.userType = val
           let userType = prop.form.getFieldValue('userType')

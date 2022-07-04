@@ -75,6 +75,7 @@ export default {
       let text = template.text || ''
       let {id} = this.form.getFieldsValue(['id']);
       text = text.replace('id="{processId}"', ' id="' + id + '" ')
+      text = text.replace('bpmnElement="{processId}"', ' bpmnElement="'+id+'"')
       text = text.replace('flowable:templateId="{templateId}"', 'flowable:templateId="'+val+'"')
       this.$emit('templateChange',text)
       // this.form.setFieldsValue({templateId:val})

@@ -1,6 +1,6 @@
 
 import Vue from 'vue'
-import App from './Demo.vue'
+import App from './Lib.vue'
 // import ElementUI from 'element-ui'
 import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css';
