@@ -19,7 +19,8 @@
 import mixinPanel from '../../common/mixinPanel'
 // import mixinExecutionListener from '../../common/mixinExecutionListener'
 // import signalDialog from './property/signal'
-import { commonParse } from '../../common/parseElement'
+import {commonParse} from '../../common/parseElement'
+
 export default {
   components: {
     //signalDialog
@@ -38,13 +39,12 @@ export default {
   },
   data() {
     return {
-      form: this.$form.createForm(this, {onValuesChange:this.onValuesChange}),
+      form: this.$form.createForm(this, {onValuesChange: this.onValuesChange}),
       signalLength: 0,
       formData: {}
     }
   },
-  computed: {
-  },
+  computed: {},
   watch: {
     // 'formData.processCategory': function(val) {
     //   if (val === '') val = null
@@ -53,6 +53,9 @@ export default {
   },
   created() {
     this.formData = commonParse(this.element)
+    if (!this.formData.hasOwnProperty('templateId')) {
+      this.$set(this.formData, 'templateId', undefined)
+    }
     this.$nextTick(() => {
       this.form.setFieldsValue({
         id: this.formData.id,
@@ -70,17 +73,17 @@ export default {
       }
       this.dialogName = ''
     },
-    onChange(val,option){
+    onChange(val, option) {
       let template = option.data.attrs.template || {}
       let text = template.text || ''
       let {id} = this.form.getFieldsValue(['id']);
       text = text.replace('id="{processId}"', ' id="' + id + '" ')
-      text = text.replace('bpmnElement="{processId}"', ' bpmnElement="'+id+'"')
-      text = text.replace('flowable:templateId="{templateId}"', 'flowable:templateId="'+val+'"')
-      this.$emit('templateChange',text)
+      text = text.replace('bpmnElement="{processId}"', ' bpmnElement="' + id + '"')
+      text = text.replace('flowable:templateId="{templateId}"', 'flowable:templateId="' + val + '"')
+      this.$emit('templateChange', text)
       // this.form.setFieldsValue({templateId:val})
     },
-    onValuesChange: function(prop, values) {
+    onValuesChange: function (prop, values) {
       for (var key in values) {
         this.formData[key] = values[key]
       }
