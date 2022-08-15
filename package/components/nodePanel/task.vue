@@ -41,8 +41,16 @@
           </a-select-option>
         </a-select>
       </a-form-item>
+      <a-form-item label="多实例">
+        <a-button @click="dialogName = 'multiInstanceDialog'">编辑</a-button>
+      </a-form-item>
     </a-form>
-
+    <multiInstanceDialog
+        v-if="dialogName === 'multiInstanceDialog'"
+        :element="element"
+        :modeler="modeler"
+        @close="finishMultiInstance"
+    />
   </div>
 </template>
 
@@ -50,14 +58,14 @@
 import mixinPanel from '../../common/mixinPanel'
 // import executionListenerDialog from './property/executionListener'
 // import taskListenerDialog from './property/taskListener'
-// import multiInstanceDialog from './property/multiInstance'
+ import multiInstanceDialog from './property/multiInstance'
 import {commonParse, userTaskParse} from '../../common/parseElement'
 
 export default {
   components: {
     // executionListenerDialog,
     // taskListenerDialog,
-    // multiInstanceDialog
+    multiInstanceDialog
   },
   mixins: [mixinPanel],
   props: {

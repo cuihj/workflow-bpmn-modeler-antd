@@ -20,7 +20,6 @@ import mixinPanel from '../../common/mixinPanel'
 // import mixinExecutionListener from '../../common/mixinExecutionListener'
 // import signalDialog from './property/signal'
 import {commonParse} from '../../common/parseElement'
-
 export default {
   components: {
     //signalDialog
