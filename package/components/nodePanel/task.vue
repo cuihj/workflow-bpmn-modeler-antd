@@ -27,6 +27,7 @@
       <a-form-item v-show="formData.userType === 'candidateUsers'"
                    label="候选人员">
         <a-select placeholder="候选人员" mode="multiple"
+                  :filter-option="filterOption"
                   v-decorator="['candidateUsers']">
           <a-select-option v-for="item in users" :key="item.id">
             {{ item.name }}
@@ -35,7 +36,9 @@
       </a-form-item>
       <a-form-item v-show="formData.userType === 'candidateGroups'"
                    label="候选组">
-        <a-select placeholder="候选组" mode="multiple" v-decorator="['candidateGroups']">
+        <a-select placeholder="候选组" mode="multiple" v-decorator="['candidateGroups']"
+                  :filter-option="filterOption"
+        >
           <a-select-option v-for="item in groups" :key="item.id">
             {{ item.name }}
           </a-select-option>
@@ -280,7 +283,12 @@ export default {
         this.computedHasMultiInstance()
       }
       this.dialogName = ''
-    }
+    },
+    filterOption(input, option) {
+      return (
+          option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      );
+    },
   }
 }
 </script>
