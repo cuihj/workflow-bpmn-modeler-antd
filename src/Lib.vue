@@ -3,6 +3,7 @@
     <bpmn-modeler
       ref="refNode"
       :xml="xml"
+      :config="config"
       :users="users"
       :groups="groups"
       :categorys="categorys"
@@ -23,7 +24,14 @@ export default {
       users: [],
       groups: [],
       categorys: [],
-      isView: false
+      isView: false,
+      config:{
+        image:true,
+        api:true,
+        revert:true,
+        schema:true,
+        form:true,
+      },
     }
   },
   mounted() {
@@ -37,6 +45,7 @@ export default {
       this.users = eventData.users ?? []
       this.groups = eventData.groups ?? []
       this.categorys = eventData.categorys ?? []
+      this.config = eventData.config ?? {}
       this.isView = eventData.isView ?? false
     }
   }
