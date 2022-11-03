@@ -12,6 +12,21 @@
         </a-select-option>
       </a-select>
     </a-form-item>
+    <a-form-item v-if="config.form" label="表单">
+      <a-input v-decorator="['form']"/>
+    </a-form-item>
+    <a-form-item v-if="config.schema" label="Schema">
+      <a-input v-decorator="['schema']"/>
+    </a-form-item>
+    <a-form-item v-if="config.api" label="接口">
+      <a-input v-decorator="['api']" />
+    </a-form-item>
+    <a-form-item v-if="config.revert" label="允许回退">
+      <a-checkbox v-decorator="['revert',{valuePropName:'checked',initialValue:false}]"/>
+    </a-form-item>
+    <a-form-item v-if="config.image" label="显示流程图">
+      <a-checkbox v-decorator="['image',{valuePropName:'checked',initialValue:false}]"/>
+    </a-form-item>
   </a-form>
 </template>
 
@@ -33,6 +48,10 @@ export default {
     },
     templateNames: {
       type: Array,
+      required: true
+    },
+    config: {
+      type: Object,
       required: true
     }
   },
@@ -59,6 +78,11 @@ export default {
       this.form.setFieldsValue({
         id: this.formData.id,
         templateId: this.formData.templateId,
+        form: this.formData.form,
+        schema: this.formData.schema,
+        api: this.formData.api,
+        revert: this.formData.revert=='true'?true:false,
+        image: this.formData.image=='true'?true:false
       })
     })
   },

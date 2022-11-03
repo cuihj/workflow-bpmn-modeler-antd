@@ -51,6 +51,7 @@
       <a-layout-sider width="300px" theme="light">
         <panel v-if="modeler" :modeler="modeler"
                :users="users" :groups="groups"
+               :config="config"
                :template-names="templateNames"
                :process-names="processNames"
                @templateChange="onTemplateChange"
@@ -86,6 +87,15 @@ export default {
     groups: {
       type: Array,
       default: () => []
+    },
+    config: {
+      type: Object,
+      default:  ({
+        schema:false,
+        form:false,
+        api:false,
+        revert:false,
+        image:false})
     },
     categorys: {
       type: Array,

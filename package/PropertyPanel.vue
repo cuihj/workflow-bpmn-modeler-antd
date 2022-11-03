@@ -7,6 +7,7 @@
       :element="element"
       :modeler="modeler"
       :users="users"
+      :config="config"
       :groups="groups"
       :processNames="processNames"
       :templateNames="templateNames"
@@ -51,6 +52,10 @@ export default {
     modeler: {
       type: Object,
       required: true
+    },
+    config: {
+      type: Object,
+      required: true
     }
   },
   data() {
@@ -62,9 +67,6 @@ export default {
         color: null
       },
       roles: [
-        { value: 'manager', label: '经理' },
-        { value: 'personnel', label: '人事' },
-        { value: 'charge', label: '主管' }
       ]
     }
   },

@@ -11,14 +11,16 @@
         <a-input v-decorator="['documentation']"/>
       </a-form-item>
       <a-form-item label="人员类型">
-        <a-select v-decorator="['userType', {rules: [{required: true, message: '请选择人员类型'}]}]">
-          <a-select-option v-for="item in userTypeOption" :key="item.value">
+        <a-select
+            v-decorator="['userType', {rules: [{required: true, message: '请选择人员类型'}]}]">
+          <a-select-option v-for="item in userTypeOption" :key="item.value"
+          >
             {{ item.label }}
           </a-select-option>
         </a-select>
       </a-form-item>
       <a-form-item v-show="formData.userType === 'assignee'" label="指定人员">
-        <a-select v-decorator="['assignee']">
+        <a-select v-decorator="['assignee']"  :filter-option="filterOption"  show-search>
           <a-select-option v-for="item in users" :key="item.id">
             {{ item.name }}
           </a-select-option>
@@ -46,6 +48,9 @@
       </a-form-item>
       <a-form-item label="多实例">
         <a-button @click="dialogName = 'multiInstanceDialog'">编辑</a-button>
+      </a-form-item>
+      <a-form-item label="节点表单">
+        <a-input v-decorator="['formKey']"/>
       </a-form-item>
     </a-form>
     <multiInstanceDialog
@@ -79,6 +84,10 @@ export default {
     groups: {
       type: Array,
       required: true
+    },
+    config:{
+      type: Object,
+      required: false
     }
   },
   data() {
@@ -195,7 +204,8 @@ export default {
         userType: this.formData.userType,
         candidateUsers: this.formData.candidateUsers,
         candidateGroups: this.formData.candidateGroups,
-        assignee: this.formData.assignee
+        assignee: this.formData.assignee,
+        formKey: this.formData.formKey
       })
       this.init = false
     })
@@ -249,6 +259,9 @@ export default {
           return
         }
         this.updateProperties({'flowable:candidateGroups': val?.join(',')})
+      } else if (values.hasOwnProperty('formKey')) {
+        let formKey = prop.form.getFieldValue('formKey')
+        this.updateProperties({'flowable:formKey': formKey})
       }
     },
     computedExecutionListenerLength() {

@@ -5,6 +5,7 @@
       :xml="xml"
       :users="users"
       :groups="groups"
+      :config="config"
       :template-names="templateNames"
       :is-view="false"
       @save="saveModeler"
@@ -26,14 +27,17 @@ export default {
         { name: '李四', id: 'lisi' },
         { name: '王五', id: 'wangwu' }
       ],
+      config:{
+        image:true,
+        api:true,
+        revert:true,
+        schema:true,
+        form:true,
+      },
       groups: [
         { name: 'web组', id: 'web' },
         { name: 'java组', id: 'java' },
         { name: 'python组', id: 'python' }
-      ],
-      categorys: [
-        { name: 'OA', id: 'oa' },
-        { name: '财务', id: 'finance' }
       ],
       templateNames:[ { name: '模板1', id: 't1',text:'' },
         { name: '模板2', id: 't2',text:'' }],

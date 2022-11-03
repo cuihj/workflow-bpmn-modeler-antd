@@ -63,9 +63,24 @@ export default {
       if (values.hasOwnProperty('id')) {
         let val = values.id
         this.updateProperties({ id: val })
-      }else if (values.hasOwnProperty('templateId')) {
+      } else if (values.hasOwnProperty('templateId')) {
         let val = values.templateId
         this.updateProperties({ 'flowable:templateId': val })
+      } else if (values.hasOwnProperty('form')) {
+        let val = values.form
+        this.updateProperties({ 'flowable:form': val })
+      } else if (values.hasOwnProperty('schema')) {
+        let val = values.schema
+        this.updateProperties({ 'flowable:schema': val })
+      } else if (values.hasOwnProperty('api')) {
+        let val = values.api
+        this.updateProperties({ 'flowable:api': val })
+      } else if (values.hasOwnProperty('revert')) {
+        let val = values.revert
+        this.updateProperties({ 'flowable:revert': val })
+      } else if (values.hasOwnProperty('image')) {
+        let val = values.image
+        this.updateProperties({ 'flowable:image': val })
       }
     },
     setColor(properties) {
