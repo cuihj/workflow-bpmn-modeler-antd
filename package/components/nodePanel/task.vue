@@ -10,7 +10,11 @@
       <a-form-item label="节点描述">
         <a-input v-decorator="['documentation']"/>
       </a-form-item>
-      <a-form-item label="人员类型">
+      <a-form-item label="会签">
+        <a-checkbox
+            v-decorator="['multiInstance',{valuePropName:'checked',initialValue:false}]"></a-checkbox>
+      </a-form-item>
+      <a-form-item label="人员类型" v-show="formData.multiInstance!==true">
         <a-select
             v-decorator="['userType', {rules: [{required: true, message: '请选择人员类型'}]}]">
           <a-select-option v-for="item in userTypeOption" :key="item.value"
@@ -19,14 +23,14 @@
           </a-select-option>
         </a-select>
       </a-form-item>
-      <a-form-item v-show="formData.userType === 'assignee'" label="指定人员">
-        <a-select v-decorator="['assignee']"  :filter-option="filterOption"  show-search>
+      <a-form-item v-show="formData.multiInstance!==true && formData.userType === 'assignee'" label="指定人员">
+        <a-select v-decorator="['assignee']" :filter-option="filterOption" show-search>
           <a-select-option v-for="item in users" :key="item.id">
             {{ item.name }}
           </a-select-option>
         </a-select>
       </a-form-item>
-      <a-form-item v-show="formData.userType === 'candidateUsers'"
+      <a-form-item v-show="formData.multiInstance!==true && formData.userType === 'candidateUsers'"
                    label="候选人员">
         <a-select placeholder="候选人员" mode="multiple"
                   :filter-option="filterOption"
@@ -36,7 +40,7 @@
           </a-select-option>
         </a-select>
       </a-form-item>
-      <a-form-item v-show="formData.userType === 'candidateGroups'"
+      <a-form-item v-show="formData.multiInstance!==true && formData.userType === 'candidateGroups'"
                    label="候选组">
         <a-select placeholder="候选组" mode="multiple" v-decorator="['candidateGroups']"
                   :filter-option="filterOption"
@@ -46,19 +50,48 @@
           </a-select-option>
         </a-select>
       </a-form-item>
-      <a-form-item label="多实例">
-        <a-button @click="dialogName = 'multiInstanceDialog'">编辑</a-button>
+      <a-form-item v-show="formData.multiInstance===true"
+                   label="会签人员">
+        <a-select placeholder="会签人员" mode="multiple"
+                  :filter-option="filterOption"
+                  v-decorator="['multiInstanceUsers', { rules: [{ required: true, message: '不能为空' }] }]">
+          <a-select-option v-for="item in users" :key="item.id">
+            {{ item.name }}
+          </a-select-option>
+        </a-select>
+      </a-form-item>
+      <a-form-item label="执行方式" v-show="formData.multiInstance===true">
+        <a-radio-group v-decorator="['isSequential', { rules: [{ required: true, message: '不能为空' }] }]">
+          <a-radio :value="true">
+            串行
+          </a-radio>
+          <a-radio :value="false">
+            并行
+          </a-radio>
+        </a-radio-group>
+      </a-form-item>
+      <a-form-item v-show="formData.multiInstance===true">
+           <span slot="label">
+              会签人数&nbsp;
+              <a-tooltip>
+                <template #title>
+                  会签人数达到(>=) 任务完成 ，如会签人员是三个，设立设置3表示所有人员都必须审批，
+                </template>
+                <a-icon type="question-circle-o"/>
+              </a-tooltip>
+          </span>
+        <a-input-number v-decorator="['completionConditionNum']"/>
       </a-form-item>
       <a-form-item label="节点表单">
         <a-input v-decorator="['formKey']"/>
       </a-form-item>
     </a-form>
-    <multiInstanceDialog
-        v-if="dialogName === 'multiInstanceDialog'"
-        :element="element"
-        :modeler="modeler"
-        @close="finishMultiInstance"
-    />
+    <!--    <multiInstanceDialog-->
+    <!--        v-if="dialogName === 'multiInstanceDialog'"-->
+    <!--        :element="element"-->
+    <!--        :modeler="modeler"-->
+    <!--        @close="finishMultiInstance"-->
+    <!--    />-->
   </div>
 </template>
 
@@ -66,14 +99,14 @@
 import mixinPanel from '../../common/mixinPanel'
 // import executionListenerDialog from './property/executionListener'
 // import taskListenerDialog from './property/taskListener'
- import multiInstanceDialog from './property/multiInstance'
+// import multiInstanceDialog from './property/multiInstance'
 import {commonParse, userTaskParse} from '../../common/parseElement'
 
 export default {
   components: {
     // executionListenerDialog,
     // taskListenerDialog,
-    multiInstanceDialog
+    //multiInstanceDialog
   },
   mixins: [mixinPanel],
   props: {
@@ -85,7 +118,7 @@ export default {
       type: Array,
       required: true
     },
-    config:{
+    config: {
       type: Object,
       required: false
     }
@@ -193,16 +226,26 @@ export default {
   },
   created() {
     this.init = true
-    this.$nextTick(function () {
+    this.$nextTick(() => {
       let cache = commonParse(this.element)
       cache = userTaskParse(cache)
+      console.log(cache)
       this.formData = cache
+      let multiInstance = false
+      if (cache.loopCharacteristics) {
+        multiInstance = true
+      }
+      this.formData.multiInstance = multiInstance
       this.form.setFieldsValue({
         id: this.formData.id,
         name: this.formData.name,
         documentation: this.formData.documentation,
         userType: this.formData.userType,
         candidateUsers: this.formData.candidateUsers,
+        multiInstance: multiInstance,
+        multiInstanceUsers: this.formData.multiInstanceUsers,
+        isSequential: this.formData.isSequential,
+        completionConditionNum: this.formData.completionConditionNum,
         candidateGroups: this.formData.candidateGroups,
         assignee: this.formData.assignee,
         formKey: this.formData.formKey
@@ -211,10 +254,9 @@ export default {
     })
     // this.computedExecutionListenerLength()
     // this.computedTaskListenerLength()
-    // this.computedHasMultiInstance()
   },
   methods: {
-    onValuesChange: function (prop, values) {
+    onValuesChange(prop, values) {
       if (this.init === true) {
         return
       }
@@ -222,13 +264,85 @@ export default {
         this.formData[key] = values[key]
       }
       this.updateCommonProperties(values)
+
+      if (values.hasOwnProperty('multiInstance')) {
+        delete this.element.businessObject.$attrs[`flowable:assignee`]
+        const multiInstance = values.multiInstance
+        if (multiInstance === true) {
+          let loopCharacteristics = this.element.businessObject.get('loopCharacteristics')
+          if (!loopCharacteristics) {
+            loopCharacteristics = this.modeler.get('moddle').create('bpmn:MultiInstanceLoopCharacteristics')
+          }
+
+          loopCharacteristics['collection'] = 'assigneeList'
+          loopCharacteristics['elementVariable'] = 'assignee'
+          loopCharacteristics['isSequential'] = this.formData.isSequential === true
+          let extensionElements = this.element.businessObject.get('extensionElements')
+          if (!extensionElements) {
+            extensionElements = this.modeler.get('moddle').create('bpmn:ExtensionElements')
+          }
+          this.updateProperties({extensionElements: extensionElements, loopCharacteristics: loopCharacteristics})
+        } else {
+          delete this.element.businessObject.loopCharacteristics
+          delete this.element.businessObject.extensionElements
+          //delete this.element.businessObject.$attrs[`extensionElements`, `loopCharacteristics`]
+          this.updateProperties({extensionElements: null, loopCharacteristics: null})
+        }
+      }
+      if (values.hasOwnProperty('multiInstanceUsers')) {
+        if (this.config.className) {
+          let extensionElements = this.element.businessObject.get('extensionElements')
+          if (!extensionElements) {
+            extensionElements = this.modeler.get('moddle').create('bpmn:ExtensionElements')
+          }
+          // 清除旧值
+          extensionElements.values = extensionElements.values?.filter(item => item.$type !== 'flowable:ExecutionListener') ?? []
+          const taskListener = this.modeler.get('moddle').create('flowable:ExecutionListener')
+          taskListener['event'] = 'start'
+          taskListener['class'] = this.config.className
+          var multiInstanceUsers = values.multiInstanceUsers || []
+          const val = multiInstanceUsers.join(',')
+          const fieldElement = this.modeler.get('moddle').create('flowable:Field')
+          fieldElement['name'] = 'assignee'
+          // 注意：flowable.json 中定义的string和expression类为小写，不然会和原生的String类冲突，此处为hack
+          const valueElement = this.modeler.get('moddle').create(`flowable:string`, {body: val})
+          fieldElement['string'] = valueElement
+          taskListener.get('fields').push(fieldElement)
+          extensionElements.get('values').push(taskListener)
+          this.updateProperties({extensionElements: extensionElements})
+        }
+      }
+      if (values.hasOwnProperty('completionConditionNum')) {
+        let loopCharacteristics = this.element.businessObject.get('loopCharacteristics')
+        if (!loopCharacteristics) {
+          loopCharacteristics = this.modeler.get('moddle').create('bpmn:MultiInstanceLoopCharacteristics')
+        }
+        const completionConditionNum = values.completionConditionNum
+        // loopCharacteristics['isSequential'] = this.formData.isSequential
+        //loopCharacteristics['collection'] = 'assigneeList'
+
+        // loopCharacteristics['elementVariable'] = 'assignee'
+        loopCharacteristics['isSequential'] = this.formData.isSequential === true
+        const completionCondition = this.modeler.get('moddle').create('bpmn:Expression', {body: ('${nrOfCompletedInstances>=' + completionConditionNum + '}')})
+        loopCharacteristics['completionCondition'] = completionCondition
+        this.updateProperties({loopCharacteristics: loopCharacteristics})
+      }
+      if (values.hasOwnProperty('isSequential')) {
+        let loopCharacteristics = this.element.businessObject.get('loopCharacteristics')
+        if (!loopCharacteristics) {
+          loopCharacteristics = this.modeler.get('moddle').create('bpmn:MultiInstanceLoopCharacteristics')
+        }
+        loopCharacteristics['isSequential'] = values.isSequential
+        this.updateProperties({loopCharacteristics: loopCharacteristics})
+      }
+
       if (values.hasOwnProperty('name')) {
-        let val = values.name
+        const val = values.name
         this.updateProperties({'name': val})
       } else if (values.hasOwnProperty('userType')) {
         // let val = values.userType
         // this.formData.userType = val
-        let userType = prop.form.getFieldValue('userType')
+        const userType = prop.form.getFieldValue('userType')
         if (userType) {
           const types = ['assignee', 'candidateUsers', 'candidateGroups']
           types.forEach(type => {
@@ -236,72 +350,72 @@ export default {
           })
         }
       } else if (values.hasOwnProperty('assignee')) {
-        let val = values.assignee
-        let userType = prop.form.getFieldValue('userType')
+        const val = values.assignee
+        const userType = prop.form.getFieldValue('userType')
         if (userType !== 'assignee') {
           delete this.element.businessObject.$attrs[`flowable:assignee`]
           return
         }
         this.updateProperties({'flowable:assignee': val})
       } else if (values.hasOwnProperty('candidateUsers')) {
-        let val = values.candidateUsers
-        let userType = prop.form.getFieldValue('userType')
+        const val = values.candidateUsers
+        const userType = prop.form.getFieldValue('userType')
         if (userType !== 'candidateUsers') {
           delete this.element.businessObject.$attrs[`flowable:candidateUsers`]
           return
         }
         this.updateProperties({'flowable:candidateUsers': val?.join(',')})
       } else if (values.hasOwnProperty('candidateGroups')) {
-        let val = values.candidateGroups
-        let userType = prop.form.getFieldValue('userType')
+        const val = values.candidateGroups
+        const userType = prop.form.getFieldValue('userType')
         if (userType !== 'candidateGroups') {
           delete this.element.businessObject.$attrs[`flowable:candidateGroups`]
           return
         }
         this.updateProperties({'flowable:candidateGroups': val?.join(',')})
       } else if (values.hasOwnProperty('formKey')) {
-        let formKey = prop.form.getFieldValue('formKey')
+        const formKey = prop.form.getFieldValue('formKey')
         this.updateProperties({'flowable:formKey': formKey})
       }
     },
-    computedExecutionListenerLength() {
-      this.executionListenerLength = this.element.businessObject.extensionElements?.values
-          ?.filter(item => item.$type === 'flowable:ExecutionListener').length ?? 0
-    },
-    computedTaskListenerLength() {
-      this.taskListenerLength = this.element.businessObject.extensionElements?.values
-          ?.filter(item => item.$type === 'flowable:TaskListener').length ?? 0
-    },
-    computedHasMultiInstance() {
-      if (this.element.businessObject.loopCharacteristics) {
-        this.hasMultiInstance = true
-      } else {
-        this.hasMultiInstance = false
-      }
-    },
-    finishExecutionListener() {
-      if (this.dialogName === 'executionListenerDialog') {
-        this.computedExecutionListenerLength()
-      }
-      this.dialogName = ''
-    },
-    finishTaskListener() {
-      if (this.dialogName === 'taskListenerDialog') {
-        this.computedTaskListenerLength()
-      }
-      this.dialogName = ''
-    },
-    finishMultiInstance() {
-      if (this.dialogName === 'multiInstanceDialog') {
-        this.computedHasMultiInstance()
-      }
-      this.dialogName = ''
-    },
+    // computedExecutionListenerLength() {
+    //   this.executionListenerLength = this.element.businessObject.extensionElements?.values
+    //       ?.filter(item => item.$type === 'flowable:ExecutionListener').length ?? 0
+    // },
+    // computedTaskListenerLength() {
+    //   this.taskListenerLength = this.element.businessObject.extensionElements?.values
+    //       ?.filter(item => item.$type === 'flowable:TaskListener').length ?? 0
+    // },
+    // computedHasMultiInstance() {
+    //   if (this.formData.multiInstanceUsers) {
+    //     this.formData.multiInstance = true;
+    //     this.form.setFieldsValue({multiInstance: true})
+    //   } else {
+    //     this.formData.multiInstance = false;
+    //     this.form.setFieldsValue({multiInstance: false})
+    //   }
+    // },
+    // finishExecutionListener() {
+    //   if (this.dialogName === 'executionListenerDialog') {
+    //     this.computedExecutionListenerLength()
+    //   }
+    //   this.dialogName = ''
+    // },
+    // finishTaskListener() {
+    //   if (this.dialogName === 'taskListenerDialog') {
+    //     this.computedTaskListenerLength()
+    //   }
+    //   this.dialogName = ''
+    // },
+    // finishMultiInstance() {
+    //   if (this.dialogName === 'multiInstanceDialog') {
+    //     this.computedHasMultiInstance()
+    //   }
+    //   this.dialogName = ''
+    // },
     filterOption(input, option) {
-      return (
-          option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
-      );
-    },
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+    }
   }
 }
 </script>

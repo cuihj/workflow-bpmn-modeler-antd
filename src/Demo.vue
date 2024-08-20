@@ -1,20 +1,21 @@
 <template>
   <div id="app">
     <bpmn-modeler
-      ref="refNode"
-      :xml="xml"
-      :users="users"
-      :groups="groups"
-      :config="config"
-      :template-names="templateNames"
-      :is-view="false"
-      @save="saveModeler"
+        ref="refNode"
+        :xml="xml"
+        :users="users"
+        :groups="groups"
+        :config="config"
+        :template-names="templateNames"
+        :is-view="false"
+        @save="saveModeler"
     />
   </div>
 </template>
 
 <script>
 import bpmnModeler from '../package/index'
+
 export default {
   components: {
     bpmnModeler
@@ -23,24 +24,25 @@ export default {
     return {
       xml: '', // 后端查询到的xml
       users: [
-        { name: '张三', id: 'zhangsan' },
-        { name: '李四', id: 'lisi' },
-        { name: '王五', id: 'wangwu' }
+        {name: '张三', id: 'zhangsan'},
+        {name: '李四', id: 'lisi'},
+        {name: '王五', id: 'wangwu'}
       ],
-      config:{
-        image:true,
-        api:true,
-        revert:true,
-        schema:true,
-        form:true,
+      config: {
+        image: true,
+        api: true,
+        revert: true,
+        schema: true,
+        form: true,
+        className: 'com.xxx.MyTaskListener'
       },
       groups: [
-        { name: 'web组', id: 'web' },
-        { name: 'java组', id: 'java' },
-        { name: 'python组', id: 'python' }
+        {name: 'web组', id: 'web'},
+        {name: 'java组', id: 'java'},
+        {name: 'python组', id: 'python'}
       ],
-      templateNames:[ { name: '模板1', id: 't1',text:'' },
-        { name: '模板2', id: 't2',text:'' }],
+      templateNames: [{name: '模板1', id: 't1', text: ''},
+        {name: '模板2', id: 't2', text: ''}],
     }
   },
   mounted() {
@@ -49,16 +51,16 @@ export default {
   methods: {
     getModelDetail() {
       fetch('https://cdn.jsdelivr.net/gh/goldsubmarine/workflow-bpmn-modeler@master/src/Leave.bpmn20.xml')
-        .then(response => {
-          return response.text()
-        }).then(xml => {
-          // this.xml = xml
-          this.templateNames = [
-            {id:'1',name:'模板1',text: this.createXml() },
-            {id:'2',name:'模板2',text: this.createXml()  },
+          .then(response => {
+            return response.text()
+          }).then(xml => {
+        // this.xml = xml
+        this.templateNames = [
+          {id: '1', name: '模板1', text: this.createXml()},
+          {id: '2', name: '模板2', text: this.createXml()},
 
-          ]
-        })
+        ]
+      })
     },
     createXml(id) {
       return `<?xml version="1.0" encoding="UTF-8"?>
