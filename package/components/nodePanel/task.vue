@@ -80,7 +80,8 @@
                 <a-icon type="question-circle-o"/>
               </a-tooltip>
           </span>
-        <a-input-number v-decorator="['completionConditionNum']"/>
+        <a-input-number :min="1"
+                        v-decorator="['completionConditionNum', { rules: [{ required: true, message: '不能为空' }] }]"/>
       </a-form-item>
       <a-form-item label="节点表单">
         <a-input v-decorator="['formKey']"/>
@@ -266,14 +267,13 @@ export default {
       this.updateCommonProperties(values)
 
       if (values.hasOwnProperty('multiInstance')) {
-        delete this.element.businessObject.$attrs[`flowable:assignee`]
+        //delete this.element.businessObject.$attrs[`flowable:assignee`] flowable:assignee="${assignee}"
         const multiInstance = values.multiInstance
         if (multiInstance === true) {
           let loopCharacteristics = this.element.businessObject.get('loopCharacteristics')
           if (!loopCharacteristics) {
             loopCharacteristics = this.modeler.get('moddle').create('bpmn:MultiInstanceLoopCharacteristics')
           }
-
           loopCharacteristics['collection'] = 'assigneeList'
           loopCharacteristics['elementVariable'] = 'assignee'
           loopCharacteristics['isSequential'] = this.formData.isSequential === true
@@ -281,7 +281,11 @@ export default {
           if (!extensionElements) {
             extensionElements = this.modeler.get('moddle').create('bpmn:ExtensionElements')
           }
-          this.updateProperties({extensionElements: extensionElements, loopCharacteristics: loopCharacteristics})
+          this.updateProperties({
+            'flowable:assignee': '${assignee}',
+            extensionElements: extensionElements,
+            loopCharacteristics: loopCharacteristics
+          })
         } else {
           delete this.element.businessObject.loopCharacteristics
           delete this.element.businessObject.extensionElements
