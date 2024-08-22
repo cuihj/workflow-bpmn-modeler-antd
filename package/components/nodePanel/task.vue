@@ -322,12 +322,10 @@ export default {
           loopCharacteristics = this.modeler.get('moddle').create('bpmn:MultiInstanceLoopCharacteristics')
         }
         const completionConditionNum = values.completionConditionNum
-        // loopCharacteristics['isSequential'] = this.formData.isSequential
-        //loopCharacteristics['collection'] = 'assigneeList'
 
-        // loopCharacteristics['elementVariable'] = 'assignee'
         loopCharacteristics['isSequential'] = this.formData.isSequential === true
-        const completionCondition = this.modeler.get('moddle').create('bpmn:Expression', {body: ('${nrOfCompletedInstances>=' + completionConditionNum + '}')})
+        const completionCondition = this.modeler.get('moddle').create('bpmn:Expression', {body: ('${multiInstance.completedCondition(execution,' + completionConditionNum + ')}')})
+        // const completionCondition = this.modeler.get('moddle').create('bpmn:Expression', {body: ('${nrOfCompletedInstances>=' + completionConditionNum + '}')})
         loopCharacteristics['completionCondition'] = completionCondition
         this.updateProperties({loopCharacteristics: loopCharacteristics})
       }
